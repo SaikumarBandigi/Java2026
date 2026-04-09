@@ -15,9 +15,18 @@ public class NthHighestSalaryDistinct {
 
     Integer getNthHighestSalary(List<Integer> salaries, int n) {
 
-        Optional<Integer> res = salaries.stream().distinct().sorted(Comparator.reverseOrder()).skip(n - 1).findFirst();
+        Optional<Integer> res = salaries.stream().distinct().sorted(new CustomComparator()).skip(n - 1).findFirst();
         return res.orElse(-1);
     }
 
+
+}
+
+class CustomComparator implements Comparator<Integer> {
+
+    @Override
+    public int compare(Integer o1, Integer o2) {
+        return Integer.compare(o2, o1);
+    }
 
 }
