@@ -12,14 +12,11 @@ public class Groupthembasedonwhethertheystartwithavoweloraconsonant {
 
         List<String> words = Arrays.asList("apple", "banana", "orange", "grape", "umbrella", "cat");
 
-        Function<String, String> function = new Function<>() {
-            @Override
-            public String apply(String s) {
-                if (isVowel(s.charAt(0))) {
-                    return "VOWEL";
-                }
-                return "CONSONANT";
+        Function<String, String> function = s -> {
+            if (isVowel(s.charAt(0))) {
+                return "VOWEL";
             }
+            return "CONSONANT";
         };
 
         Map<String, List<String>> map = words.stream().collect(Collectors.groupingBy(function));
