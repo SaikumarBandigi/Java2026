@@ -20,6 +20,8 @@ public class GroupNumbersbasedontheirremainderwhendividedby3 {
             System.out.println(i + " " + map.get(i));
         }
 
+        System.out.println(10 % 3);
+
 
     }
 
