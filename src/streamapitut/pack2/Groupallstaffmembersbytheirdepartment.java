@@ -25,10 +25,16 @@ public class Groupallstaffmembersbytheirdepartment {
             System.out.println(s + " " + map.get(s));
         }
 
+        System.out.println();
+
         Map<String, Double> map1 = staffList.stream().
                 collect(Collectors.groupingBy(
                         StaffProfile::getDepartment, Collectors.averagingInt(StaffProfile::getSalary))
                 );
+
+        for (String s : map1.keySet()) {
+            System.out.println(s + " " + map1.get(s));
+        }
 
 
     }
