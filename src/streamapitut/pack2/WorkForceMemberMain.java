@@ -22,18 +22,18 @@ public class WorkForceMemberMain {
 
         Function<List<WorkforceMember>, Map<String, Object>> function = new Function<>() {
             @Override
-            public Map<String, Object> apply(List<WorkforceMember> list) {
+            public Map<String, Object> apply(List<WorkforceMember> list) { // Finance
                 Map<String, Object> map = new HashMap<>();
 
                 // count
-                map.put("count", list.size());
+                map.put("count", list.size());   // 2
 
                 // filter high earners
                 List<WorkforceMember> highEarners = list.stream()
                         .filter(e -> e.getSalary() > 50000)
                         .collect(Collectors.toList());
 
-                map.put("highEarners", highEarners);
+                map.put("highEarners", highEarners); // David
 
                 return map;
             }
@@ -109,19 +109,6 @@ class WorkforceMember {
     @Override
     public String toString() {
         return name + " (" + salary + ")";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof WorkforceMember)) return false;
-        WorkforceMember that = (WorkforceMember) o;
-        return id == that.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
 }
