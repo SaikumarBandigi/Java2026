@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class WorkForceMemberMain {
@@ -19,23 +20,33 @@ public class WorkForceMemberMain {
                 new WorkforceMember(6, "Frank", "Finance", 45000)
         );
 
+        Function<List<WorkforceMember>, Map<String, Object>> function = new Function<>() {
+            @Override
+            public Map<String, Object> apply(List<WorkforceMember> list) {
+                Map<String, Object> map = new HashMap<>();
+
+                // count
+                map.put("count", list.size());
+
+                // filter high earners
+                List<WorkforceMember> highEarners = list.stream()
+                        .filter(e -> e.getSalary() > 50000)
+                        .collect(Collectors.toList());
+
+                map.put("highEarners", highEarners);
+
+                return map;
+            }
+        };
+
         Map<String, Map<String, Object>> result =
                 employees.stream()
                         .collect(Collectors.groupingBy(
                                 WorkforceMember::getDepartment,
-                                Collectors.collectingAndThen(Collectors.toList(), list -> {
-                                    Map<String, Object> map = new HashMap<>();
-
-                                    map.put("count", list.size());
-
-                                    List<WorkforceMember> highEarners = list.stream()
-                                            .filter(e -> e.getSalary() > 50000)
-                                            .collect(Collectors.toList());
-
-                                    map.put("highEarners", highEarners);
-
-                                    return map;
-                                })
+                                Collectors.collectingAndThen(
+                                        Collectors.toList(),
+                                        function
+                                )
                         ));
 
         BiConsumer<String, Map<String, Object>> biConsumer = new BiConsumer<>() {
@@ -51,6 +62,18 @@ public class WorkForceMemberMain {
         result.forEach(biConsumer);
 
     }
+
+//    private static Map<String, Object> processDepartment(List<WorkforceMember> list) {
+//        Map<String, Object> map = new HashMap<>();
+//        // count
+//        map.put("count", list.size());
+//        // filter high earners
+//        List<WorkforceMember> highEarners = list.stream()
+//                .filter(e -> e.getSalary() > 50000)
+//                .collect(Collectors.toList());
+//        map.put("highEarners", highEarners);
+//        return map;
+//    }
 }
 
 
@@ -102,3 +125,14 @@ class WorkforceMember {
     }
 
 }
+/*
+
+You are given a list of WorkforceMember objects containing id, name, department, and salary.
+Using Java 8 Stream API:
+
+Group the employees by department
+For each department:
+Calculate total number of employees
+Collect employees with salary greater than 50,000
+
+ */
