@@ -20,46 +20,31 @@ public class WorkForceMemberMain {
                 new WorkforceMember(6, "Frank", "Finance", 45000)
         );
 
+
         Function<List<WorkforceMember>, Map<String, Object>> function = new Function<>() {
             @Override
-            public Map<String, Object> apply(List<WorkforceMember> list) { // Finance
+            public Map<String, Object> apply(List<WorkforceMember> list) {
                 Map<String, Object> map = new HashMap<>();
-
-                // count
-                map.put("count", list.size());   // 2
-
-                // filter high earners
-                List<WorkforceMember> highEarners = list.stream()
-                        .filter(e -> e.getSalary() > 50000)
-                        .collect(Collectors.toList());
-
-                map.put("highEarners", highEarners); // David
-
+                map.put("count", list.size());
+                List<WorkforceMember> memberList = list.stream().filter(w -> w.getSalary() > 50000).toList();
+                map.put("highEarners", memberList);
                 return map;
             }
         };
 
-        Map<String, Map<String, Object>> result =
-                employees.stream()
-                        .collect(Collectors.groupingBy(
-                                WorkforceMember::getDepartment,
-                                Collectors.collectingAndThen(
-                                        Collectors.toList(),
-                                        function
-                                )
-                        ));
 
-        BiConsumer<String, Map<String, Object>> biConsumer = new BiConsumer<>() {
-            @Override
-            public void accept(String dept, Map<String, Object> data) {
-                System.out.println("Department: " + dept);
-                System.out.println("Count: " + data.get("count"));
-                System.out.println("High Earners: " + data.get("highEarners"));
-                System.out.println();
-            }
-        };
+        Map<String, Map<String, Object>> map = employees.stream()
+                .collect(Collectors.groupingBy(WorkforceMember::getDepartment
+                        , Collectors.collectingAndThen(Collectors.toList(), function)));
 
-        result.forEach(biConsumer);
+
+        map.forEach((dept, m) -> {
+            System.out.println(dept);
+            System.out.println(m.get("count"));
+            System.out.println(m.get("highEarners"));
+            System.out.println();
+        });
+
 
     }
 
