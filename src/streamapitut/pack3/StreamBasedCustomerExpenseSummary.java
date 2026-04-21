@@ -1,9 +1,8 @@
 package streamapitut.pack3;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,17 +22,13 @@ public class StreamBasedCustomerExpenseSummary {
 
         ToDoubleFunction<BookOrderRecord> toDoubleFunction = BookOrderRecord::getPrice;
 
-        Map<String, Double> map = orders.stream().filter(b -> b.getPrice() > 400).
-                collect(Collectors.groupingBy(BookOrderRecord::getCustomerName,
-                        Collectors.summingDouble(toDoubleFunction))
-                ).entrySet().stream().sorted(
-                        (e1, e2) -> Double.compare(e2.getValue(), e1.getValue()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (a, b) -> a,
-                        LinkedHashMap::new
-                ));
+        BinaryOperator<Double> binaryOperator = (a, b) -> a;
+        Supplier<LinkedHashMap<String, Double>> supplier = LinkedHashMap::new;
+
+        Map<String, Double> map = orders.stream().filter(b -> b.getPrice() > 400).collect(
+                        Collectors.groupingBy(BookOrderRecord::getCustomerName, Collectors.summingDouble(toDoubleFunction)))
+                .entrySet().stream().sorted((new CustomCom())).
+                collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, binaryOperator, supplier));
 
 
         for (String key : map.keySet()) {
@@ -104,4 +99,13 @@ class BookOrderRecord {
 
     public BookOrderRecord() {
     }
+}
+
+class CustomCom implements Comparator<Map.Entry<String, Double>> {
+
+    @Override
+    public int compare(Map.Entry<String, Double> o1, Map.Entry<String, Double> o2) {
+        return Double.compare(o2.getValue(), o1.getValue());
+    }
+
 }
