@@ -23,7 +23,13 @@ public class StreamBasedCustomerExpenseSummary {
         ToDoubleFunction<BookOrderRecord> toDoubleFunction = BookOrderRecord::getPrice;
 
         BinaryOperator<Double> binaryOperator = (a, b) -> a;
-        Supplier<LinkedHashMap<String, Double>> supplier = LinkedHashMap::new;
+
+        Supplier<LinkedHashMap<String, Double>> supplier = new Supplier<>() {
+            @Override
+            public LinkedHashMap<String, Double> get() {
+                return new LinkedHashMap<>();
+            }
+        };
 
         Map<String, Double> map = orders.stream().filter(b -> b.getPrice() > 400).collect(
                         Collectors.groupingBy(BookOrderRecord::getCustomerName, Collectors.summingDouble(toDoubleFunction)))
